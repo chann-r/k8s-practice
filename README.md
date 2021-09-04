@@ -1,7 +1,7 @@
 # k8s-practice
 
 ## このリポジトリの再現手順
-05130c22d0716221c60c3c0241aed9f846df5713
+https://github.com/Ryotaro-Hayashi/k8s-practice/commit/05130c22d0716221c60c3c0241aed9f846df5713
 
 ## k8sについて
 ### motivation
