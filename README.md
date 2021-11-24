@@ -3,6 +3,9 @@
 ## このリポジトリの再現手順
 https://github.com/Ryotaro-Hayashi/k8s-practice/commit/05130c22d0716221c60c3c0241aed9f846df5713
 
+## 参照
+[`kubectl apply`後のアプリケーション構成](https://github.com/nakamasato/kubernetes-basics/tree/v2.0-rc/06-run-simple-application-in-kubernetes#create-sample-application-deployment-configmap-secret-and-service-in-your-namespace)
+
 ## k8sについて
 ### motivation
 - アプリケーションはなるべく複数マシンに分けてデプロイし、障害が起きても安定稼働できるようにしたい
@@ -71,8 +74,8 @@ Deploymentの中で管理する
 Podの管理を人の代わりに自動でやってくれる
 
 以下のような役割がある
-- ReplicaSetの更新（ロールアウト）
-- ロールバック
+- ReplicaSetの更新（別名：ロールアウト。Podテンプレートが変更された時のみトリガーされる）
+- ロールバック（不安定な場合に前のバージョンに戻す）
 - スケールアップ・ダウン（ReplicaSetのreplica数変更）
 
 フィールドは以下
@@ -270,4 +273,43 @@ kubectl get endpoints [Service名]
 #### ポートフォワーディング
 ```
 kubectl port-forward svc/[Service名] [localのポート]:[serviceのポート]
+```
+
+### デバッグ
+
+#### あるPodがどのNodeで動いているか
+```
+kubectl get pod -n [Namespace] [Pod名] -owide
+```
+
+### あるNodeでどのPodが動いているか
+```
+kubectl get node [Node名] -owide 
+```
+
+### PodがRunningではない原因を探る
+```
+kubectl get [リソースタイプ] -n [Namespace]
+```
+- 出力結果のReasonを見る
+
+### Podのログを見る
+```
+kubectl logs [Pod名] --follow -tail 20 -c [Container名] 
+```
+
+### watchしながらPodを削除して動きを見てみる
+- Podを監視する
+```
+watch kubectl get pod -n [Namespace]
+```
+
+- Podを消してみる（復活するのが見える）
+```
+kubectl delete pod [Pod名] -n [Namespace]
+```
+
+- ReplicaSetを変更して反映してみる（マニフェストのreplicasを編集した後に下記コマンド実行）
+```
+kubectl apply -f <ファイル> -n [Namespace]
 ```
