@@ -10,7 +10,11 @@ spec:
     selector:
         matchLabels:
             app: sample-app
-    strategy: {}
+    strategy:
+        type: RollingUpdate
+        rollingUpdate:
+            maxUnavailable: 2
+            maxSurge: 1
     template:
         metadata:
             creationTimestamp: null
